@@ -1,6 +1,8 @@
 services:
   backend:
     build: ./backend
+    networks: 
+      - robin-net
     restart: unless-stopped
     ports: ["8200:8000"]
     volumes: [robin-data:/data]
@@ -17,10 +19,17 @@ services:
       args:
         BACKEND_URL: http://backend:8000
     restart: unless-stopped
+    networks: 
+      - robin-net
     ports: ["3210:3000"]
     depends_on:
       backend:
         condition: service_healthy
-
+networks:
+  robin-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/24
 volumes:
   robin-data:
